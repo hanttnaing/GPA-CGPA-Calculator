@@ -21,7 +21,6 @@
         }
         
         .header-section { text-align: center; border-bottom: 2px solid var(--primary); margin-bottom: 20px; padding-bottom: 15px; }
-        .header-section h1 { font-size: 1.3rem; color: var(--primary); margin-bottom: 5px; }
         
         .student-info { 
             display: flex; 
@@ -34,10 +33,8 @@
             border: 1px solid #e5e7eb; 
         }
 
-        /* Responsive Grid for Desktop */
         @media (min-width: 600px) {
             .student-info { display: grid; grid-template-columns: 1fr 1fr; }
-            .header-section h1 { font-size: 1.6rem; }
             body { padding: 20px; }
             .container { padding: 30px; }
         }
@@ -45,17 +42,31 @@
         .input-group label { display: block; font-weight: 600; font-size: 0.75rem; color: #64748b; margin-bottom: 3px; }
         input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; background: white; }
 
+        /* Textarea Styling for Subject Names */
+        td textarea {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 0.9rem;
+            resize: none;
+            overflow: hidden;
+            min-height: 38px;
+            line-height: 1.4;
+            display: block;
+            background: white;
+        }
+
         .mode-selector { margin-bottom: 20px; text-align: center; padding: 12px; background: #eff6ff; border-radius: 8px; display: flex; justify-content: center; gap: 15px; }
         .mode-selector label { font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
-        .semester-box { border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 15px; overflow-x: auto; }
+        .semester-box { border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
         
-        /* Table Responsiveness */
         .table-wrapper { width: 100%; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 400px; }
         
         th { text-align: left; padding: 10px; background: #f1f5f9; border-bottom: 2px solid #e2e8f0; font-size: 0.75rem; }
-        td { padding: 8px 5px; border-bottom: 1px solid #f1f5f9; }
+        td { padding: 8px 5px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
 
         .btn { cursor: pointer; border: none; border-radius: 6px; font-weight: 600; padding: 12px 18px; transition: 0.15s; font-size: 0.9rem; -webkit-tap-highlight-color: transparent; }
         .btn-add { background: var(--primary); color: white; width: 100%; margin-top: 5px; }
@@ -65,32 +76,25 @@
         .summary-card { background: #f8fafc; border: 2px solid var(--primary); padding: 20px; border-radius: 10px; text-align: center; margin-top: 15px; }
         .summary-card h2 { font-size: 2.2rem; color: var(--primary); }
 
-        /* Add this to allow text wrapping inside table cells */
-        td input {
-            white-space: normal;
-            word-wrap: break-word;
-            height: auto;
-            min-height: 38px;
-            line-height: 1.2;
-            padding: 5px 8px !important;
-        }
-
-        /* Ensure the table cell itself doesn't force a single line */
-        td {
-            padding: 8px 5px;
-            border-bottom: 1px solid #f1f5f9;
-            vertical-align: middle;
-        }
-
         /* PRINT CONFIGURATION */
         @media print {
             @page { size: A4; margin: 15mm; }
             body { background: white; padding: 0; }
             .container { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
             .btn, .mode-selector, .btn-remove, .btn-add, #addSemBtn { display: none !important; }
-            input, select { border: none !important; background: none !important; appearance: none !important; -webkit-appearance: none !important; font-weight: 600; padding: 0; color: black; }
-            .semester-box { page-break-inside: avoid; border: 1px solid #eee; margin-bottom: 20px; overflow: visible; }
-            .table-wrapper { overflow: visible; }
+            
+            /* Remove input boxes and background colors for a clean PDF */
+            input, select, td textarea { 
+                border: none !important; 
+                background: transparent !important; 
+                appearance: none !important; 
+                -webkit-appearance: none !important; 
+                font-weight: 600; 
+                padding: 0 !important; 
+                color: black; 
+                height: auto !important;
+            }
+            .semester-box { page-break-inside: avoid; border: 1px solid #eee; margin-bottom: 20px; }
             table { min-width: 100%; }
         }
     </style>
@@ -99,8 +103,8 @@
 
 <div class="container">
     <div class="header-section">
-        <input type="text" class="sem-name-input" value="GPA/CGPA Calculator" style="text-align: center; font-size: 1.4rem; color: var(--primary); font-weight: bold; width: 100%;">
-        <p style="font-size: 0.85rem; margin-top: 5px;">Academic Performance Grade Report</p>
+        <input type="text" class="sem-name-input" value="GPA Projection Dashboard" style="text-align: center; font-size: 1.4rem; color: var(--primary); font-weight: bold; width: 100%;">
+        <p style="font-size: 0.85rem; margin-top: 5px; text-align: center;">Academic Performance Grade Report</p>
     </div>
 
     <div class="student-info">
@@ -129,7 +133,6 @@
         <p id="totalCreditsText" style="font-size: 0.85rem; font-weight: 600;">Total Credits Earned: 0</p>
     </div>
 
-    <!-- Updated Download Button -->
     <button class="btn btn-print" id="downloadBtn">Download Report</button>
 </div>
 
@@ -139,15 +142,12 @@
         "B-": 2.67, "C+": 2.33, "C": 2.0, "D": 1.0, "F": 0.0
     };
 
-    // Mobile-friendly Download/Print logic with dynamic naming
+    // Download & PDF Naming Logic
     document.getElementById('downloadBtn').addEventListener('click', function() {
         const originalTitle = document.title;
         const studentName = document.getElementById('studentName').value.trim() || "Student";
         document.title = studentName.replace(/\s+/g, '_') + "_Grade_Report";
-
         window.print();
-
-        // Restore original title after the print dialog closes
         setTimeout(() => { document.title = originalTitle; }, 1000);
     });
 
@@ -155,7 +155,6 @@
         const mode = document.querySelector('input[name="calcMode"]:checked').value;
         const addBtn = document.getElementById('addSemBtn');
         const container = document.getElementById('semester-container');
-        
         container.innerHTML = '';
         if (mode === 'gpa') {
             addBtn.style.display = 'none';
@@ -187,8 +186,8 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:55%">Subject</th>
-                            <th style="width:20%">Credit</th>
+                            <th style="width:60%">Subject</th>
+                            <th style="width:15%">Credit</th>
                             <th style="width:25%">Grade</th>
                         </tr>
                     </thead>
@@ -202,31 +201,28 @@
     }
 
     function addCourse(semId) {
-    const tbody = document.querySelector(`#${semId} .course-list`);
-    const tr = document.createElement('tr');
-    tr.className = 'course-row';
-    tr.innerHTML = `
-        <td>
-            <!-- Changed input to textarea for multi-line support -->
-            <textarea placeholder="e.g. CST - " 
-                      style="width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; font-size: 0.9rem; resize: none; overflow: hidden; min-height: 40px;"
-                      oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
-        </td>
-        <td><input type="number" class="credit" value="3" min="0" oninput="calculateResults()"></td>
-        <td>
-            <select class="grade" onchange="calculateResults()">
-                <option value="A+">A+</option><option value="A">A</option>
-                <option value="A-">A-</option><option value="B+">B+</option>
-                <option value="B">B</option><option value="B-">B-</option>
-                <option value="C+">C+</option><option value="C">C</option>
-                <option value="D">D</option><option value="F">F</option>
-            </select>
-        </td>
-    `;
-    tbody.appendChild(tr);
-    calculateResults();
+        const tbody = document.querySelector(`#${semId} .course-list`);
+        const tr = document.createElement('tr');
+        tr.className = 'course-row';
+        tr.innerHTML = `
+            <td>
+                <textarea placeholder="Subject Name" rows="1"
+                          oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+            </td>
+            <td><input type="number" class="credit" value="3" min="0" oninput="calculateResults()"></td>
+            <td>
+                <select class="grade" onchange="calculateResults()">
+                    <option value="A+">A+</option><option value="A">A</option>
+                    <option value="A-">A-</option><option value="B+">B+</option>
+                    <option value="B">B</option><option value="B-">B-</option>
+                    <option value="C+">C+</option><option value="C">C</option>
+                    <option value="D">D</option><option value="F">F</option>
+                </select>
+            </td>
+        `;
+        tbody.appendChild(tr);
+        calculateResults();
     }
-   
 
     function removeSem(id) {
         document.getElementById(id).remove();
@@ -236,7 +232,6 @@
     function calculateResults() {
         let totalPointsEarned = 0;
         let totalCreditsEarned = 0;
-
         document.querySelectorAll('.course-row').forEach(row => {
             const credit = parseFloat(row.querySelector('.credit').value) || 0;
             const gradeLetter = row.querySelector('.grade').value;
@@ -244,7 +239,6 @@
             totalPointsEarned += (point * credit);
             totalCreditsEarned += credit;
         });
-
         const finalScore = totalCreditsEarned > 0 ? (totalPointsEarned / totalCreditsEarned) : 0;
         document.getElementById('finalScore').innerText = finalScore.toFixed(2);
         document.getElementById('totalCreditsText').innerText = `Total Credits Earned: ${totalCreditsEarned}`;
