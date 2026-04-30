@@ -65,6 +65,23 @@
         .summary-card { background: #f8fafc; border: 2px solid var(--primary); padding: 20px; border-radius: 10px; text-align: center; margin-top: 15px; }
         .summary-card h2 { font-size: 2.2rem; color: var(--primary); }
 
+        /* Add this to allow text wrapping inside table cells */
+        td input {
+            white-space: normal;
+            word-wrap: break-word;
+            height: auto;
+            min-height: 38px;
+            line-height: 1.2;
+            padding: 5px 8px !important;
+        }
+
+        /* Ensure the table cell itself doesn't force a single line */
+        td {
+            padding: 8px 5px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
         /* PRINT CONFIGURATION */
         @media print {
             @page { size: A4; margin: 15mm; }
@@ -185,25 +202,31 @@
     }
 
     function addCourse(semId) {
-        const tbody = document.querySelector(`#${semId} .course-list`);
-        const tr = document.createElement('tr');
-        tr.className = 'course-row';
-        tr.innerHTML = `
-            <td><input type="text" placeholder="CST-11601"></td>
-            <td><input type="number" class="credit" value="3" min="0" oninput="calculateResults()"></td>
-            <td>
-                <select class="grade" onchange="calculateResults()">
-                    <option value="A+">A+</option><option value="A">A</option>
-                    <option value="A-">A-</option><option value="B+">B+</option>
-                    <option value="B">B</option><option value="B-">B-</option>
-                    <option value="C+">C+</option><option value="C">C</option>
-                    <option value="D">D</option><option value="F">F</option>
-                </select>
-            </td>
-        `;
-        tbody.appendChild(tr);
-        calculateResults();
+    const tbody = document.querySelector(`#${semId} .course-list`);
+    const tr = document.createElement('tr');
+    tr.className = 'course-row';
+    tr.innerHTML = `
+        <td>
+            <!-- Changed input to textarea for multi-line support -->
+            <textarea placeholder="e.g. CST - " 
+                      style="width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; font-size: 0.9rem; resize: none; overflow: hidden; min-height: 40px;"
+                      oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+        </td>
+        <td><input type="number" class="credit" value="3" min="0" oninput="calculateResults()"></td>
+        <td>
+            <select class="grade" onchange="calculateResults()">
+                <option value="A+">A+</option><option value="A">A</option>
+                <option value="A-">A-</option><option value="B+">B+</option>
+                <option value="B">B</option><option value="B-">B-</option>
+                <option value="C+">C+</option><option value="C">C</option>
+                <option value="D">D</option><option value="F">F</option>
+            </select>
+        </td>
+    `;
+    tbody.appendChild(tr);
+    calculateResults();
     }
+   
 
     function removeSem(id) {
         document.getElementById(id).remove();
