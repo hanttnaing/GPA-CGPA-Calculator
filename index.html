@@ -50,7 +50,7 @@
 
         .semester-box { border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 15px; overflow-x: auto; }
         
-        /* Table Responsiveness: Allows horizontal scroll on very small phones */
+        /* Table Responsiveness */
         .table-wrapper { width: 100%; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 400px; }
         
@@ -82,7 +82,7 @@
 
 <div class="container">
     <div class="header-section">
-        <input type="text" class="sem-name-input" value="GPA Projection Dashboard" style="text-align: center; font-size: 1.4rem; color: var(--primary); font-weight: bold; width: 100%;">
+        <input type="text" class="sem-name-input" value="GPA/CGPA Calculator" style="text-align: center; font-size: 1.4rem; color: var(--primary); font-weight: bold; width: 100%;">
         <p style="font-size: 0.85rem; margin-top: 5px;">Academic Performance Grade Report</p>
     </div>
 
@@ -112,7 +112,8 @@
         <p id="totalCreditsText" style="font-size: 0.85rem; font-weight: 600;">Total Credits Earned: 0</p>
     </div>
 
-    <button class="btn btn-print" id="printBtn">Print Report</button>
+    <!-- Updated Download Button -->
+    <button class="btn btn-print" id="downloadBtn">Download Report</button>
 </div>
 
 <script>
@@ -121,9 +122,16 @@
         "B-": 2.67, "C+": 2.33, "C": 2.0, "D": 1.0, "F": 0.0
     };
 
-    // Mobile Print Fix: Use Event Listener instead of inline onclick
-    document.getElementById('printBtn').addEventListener('click', function() {
+    // Mobile-friendly Download/Print logic with dynamic naming
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+        const originalTitle = document.title;
+        const studentName = document.getElementById('studentName').value.trim() || "Student";
+        document.title = studentName.replace(/\s+/g, '_') + "_Grade_Report";
+
         window.print();
+
+        // Restore original title after the print dialog closes
+        setTimeout(() => { document.title = originalTitle; }, 1000);
     });
 
     function toggleMode() {
