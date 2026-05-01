@@ -115,6 +115,22 @@
             table { min-width: 100%; }
             td { padding: 10px 0; }
         }
+
+        .watermark {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 500;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media print {
+            .watermark {
+                display: none !important; /* Print ထုတ်ရင် လုံးဝမပါလာစေရန် */
+            }
+        }
     </style>
 </head>
 <body>
@@ -152,6 +168,10 @@
     </div>
 
     <button class="btn btn-print" id="downloadBtn">Download Report</button>
+
+    <div class="watermark">
+        Developed by HTTN | © 2026 Academic Tool
+    </div>
 </div>
 
 <script>
