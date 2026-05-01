@@ -34,7 +34,7 @@
         }
 
         @media (min-width: 600px) {
-            .student-info { display: grid; grid-template-columns: 1fr 1fr; }
+            .student-info { display: block; } /* Changed to block since ID is removed */
             body { padding: 20px; }
             .container { padding: 30px; }
         }
@@ -42,7 +42,6 @@
         .input-group label { display: block; font-weight: 600; font-size: 0.75rem; color: #64748b; margin-bottom: 3px; }
         input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; background: white; }
 
-        /* Textarea Styling for Subject Names */
         td textarea {
             width: 100%;
             border: 1px solid #cbd5e1;
@@ -76,12 +75,24 @@
         .summary-card { background: #f8fafc; border: 2px solid var(--primary); padding: 20px; border-radius: 10px; text-align: center; margin-top: 15px; }
         .summary-card h2 { font-size: 2.2rem; color: var(--primary); }
 
+        .disclaimer-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff7ed;
+            border: 1px solid #ffedd5;
+            border-radius: 8px;
+            color: #9a3412;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+
         /* PRINT CONFIGURATION */
         @media print {
             @page { size: A4; margin: 15mm; }
             body { background: white; padding: 0; }
             .container { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
-            .btn, .mode-selector, .btn-remove, .btn-add, #addSemBtn, .delete-subject-btn { display: none !important; }
+            .btn, .mode-selector, .btn-remove, .btn-add, #addSemBtn, .delete-subject-btn, .disclaimer-box { display: none !important; }
             
             input, select, td textarea { 
                 border: none !important; 
@@ -119,10 +130,6 @@
             <label>STUDENT NAME</label>
             <input type="text" placeholder="Enter Full Name" id="studentName">
         </div>
-        <div class="input-group">
-            <label>STUDENT ID / ROLL NO.</label>
-            <input type="text" placeholder="e.g. 1UIT-01">
-        </div>
     </div>
 
     <div class="mode-selector">
@@ -138,6 +145,10 @@
         <p id="resultLabel" style="font-weight: 700; color: #64748b; text-transform: uppercase; font-size: 0.8rem;">Semester GPA</p>
         <h2 id="finalScore">0.00</h2>
         <p id="totalCreditsText" style="font-size: 0.85rem; font-weight: 600;">Total Credits Earned: 0</p>
+    </div>
+
+    <div class="disclaimer-box">
+        <strong>Disclaimer:</strong> This website is for self-evaluation purposes only. It is specifically designed for students from the <strong>UIT</strong> as calculations are based on UIT academic rules. This is not an official university record. No data is stored; all input is processed locally in real-time solely for calculation purposes.
     </div>
 
     <button class="btn btn-print" id="downloadBtn">Download Report</button>
